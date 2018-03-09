@@ -1,0 +1,2 @@
+Week2:
+Our group has been formed in this week. My partner created the Trello &. Bitbucket accounts for the team. We discuss which topic we choose and what we need to learn about this topic. We choose the second topic. Read the fundamental tutorials about blockchain. And on Friday, we discussed our project proposal and I wrote the background, user interface and epic part of it. Moreover, we decided to use Javascript and other tools for this project. 

@@ -1,1 +1,6 @@
 week2
+
+Group formed and topic decided. We also set up the project management tools 
+like Bitbucket ad Trello. Some investigations of the technology details about
+the blockchain and Ethereum were done. And Also met with other group members
+on Friday and wrote the proposal.  

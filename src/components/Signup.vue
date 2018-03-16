@@ -28,6 +28,7 @@
     },
     methods: {
       signup: function () {
+        window.alert(this.form.pseudo)
         let self = this
         if (typeof this.form.pseudo !== 'undefined' && this.form.pseudo !== '') {
           Users.create(this.form.pseudo).then(tx => {

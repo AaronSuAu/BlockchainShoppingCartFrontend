@@ -1,2 +1,0 @@
-Week2:
-Group formed. Joined Trello & Bitbucket, research some blockchain basic exercises such as smart contract and knowledge then put the resource link into Trello. Wrote project purpose together with other team member, I wrote epic functions and project aims for customer support system section. 

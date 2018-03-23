@@ -2,18 +2,15 @@
   <div id="app">
     <img src="./assets/logo.png">
     <site-header></site-header>
-    <site-sidebar></site-sidebar>
     <router-view></router-view>
   </div>
 </template>
 
 <script>
   import Header from './components/partials/Header.vue'
-  import Sidebar from './components/partials/Sidebar.vue'
   export default {
     name: 'app',
     components: {
-      'site-sidebar': Sidebar,
       'site-header': Header
     }
   }

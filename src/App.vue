@@ -25,4 +25,18 @@
   color: #2c3e50;
   margin-top: 60px;
 }
+.btn-margin-top{
+  margin-top:10px;
+}
+.image-in-list{
+  height: 100%;
+  width: 150px
+}
+.item-in-list{
+  width: 150px;
+  height: 100%
+}
+.item-margin-top-list{
+  margin-top: 10px;
+}
 </style>

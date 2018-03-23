@@ -1,6 +1,6 @@
 <template>
   <div id="app">
-    <img src="./assets/logo.png" style="text-align: center">
+    <!-- <img src="./assets/logo.png" style="text-align: center"> -->
     <site-header></site-header>
     <div class="content-cover">
       <router-view></router-view>
@@ -24,7 +24,7 @@
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   color: #2c3e50;
-  margin-top: 60px;
+  margin-top: 0px;
 }
 .btn-margin-top{
   margin-top:10px;

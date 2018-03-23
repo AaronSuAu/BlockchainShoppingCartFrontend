@@ -10,13 +10,13 @@
       <div class="collapse navbar-collapse" id="navbarSupportedContent">
         <ul class="navbar-nav mr-auto">
           <li class="nav-item active">
-            <a class="nav-link" href="#">Home <span class="sr-only">(current)</span></a>
+            <router-link to="/search" class="nav-link">Home</router-link>
           </li>
           <li class="nav-item">
-            <a class="nav-link" href="#">Shopping Cart</a>
+            <router-link to="/shoppingcart" class="nav-link">Shopping Cart</router-link>
           </li>
           <li class="nav-item">
-            <a class="nav-link" href="#">Purchased</a>
+            <router-link to="/purchased" class="nav-link">Purchased</router-link>
           </li>
           <li class="nav-item dropdown">
             <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown"
@@ -24,15 +24,20 @@
               Sell
             </a>
             <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-              <a class="dropdown-item" href="#">Post Items</a>
-              <router-link to="/sell-new" class="dropdown-item">Selling Items</router-link>
-              <a class="dropdown-item" href="#">Sold Items</a>
+              <router-link to="/sell-new" class="dropdown-item">Post Items</router-link>
+              <router-link to="/selling" class="dropdown-item">Selling Items</router-link>
+              <router-link to="/history" class="dropdown-item">Sold Items</router-link>
             </div>
           </li>
         </ul>
         <form class="form-inline my-2 my-lg-0">
-          <input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search" style="width: 800px">
+          <input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search" style="width: 600px">
           <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
+          <ul class="navbar-nav mr-auto" style="margin-left:20px">
+            <li class="nav-item active">
+              <router-link to="/search" class="nav-link">Hello, XXXXXXXX</router-link>
+            </li>
+        </ul>
         </form>
       </div>
     </nav>

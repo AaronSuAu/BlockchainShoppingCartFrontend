@@ -1,12 +1,12 @@
 <template>
   <div>
-    <h2>SideBar</h2>
+    <h2>Register</h2>
   </div>
 </template>
 
 <script>
   export default {
-    name: 'sidebar'
+    name: 'register'
   }
 </script>
 

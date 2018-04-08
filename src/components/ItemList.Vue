@@ -43,25 +43,11 @@ export default {
   name: 'itemList',
   data () {
     return {
-      items: [
-        { image_url: 'http://icons.iconarchive.com/icons/paomedia/small-n-flat/1024/cat-icon.png',
-          quantity: '12',
-          name: 'Foo',
-          Description: 'description',
-          owner_id: 12,
-          category: 3,
-          product_id: 1
-        },
-        { image_url: 'http://icons.iconarchive.com/icons/paomedia/small-n-flat/1024/cat-icon.png',
-          quantity: '11',
-          name: 'Boo',
-          Description: 'description2',
-          owner_id: 19,
-          category: 5,
-          product_id: 2
-        }
-      ]
+      items: []
     }
+  },
+  mounted () {
+    this.fetchData(this.$route)
   },
   methods: {
     addItemToShoppingCart (item) {
@@ -72,6 +58,24 @@ export default {
     },
     updateItem (item) {
       alert('Update ' + item.product_id)
+    },
+    async fetchData (route) {
+      if (route === '/search') {
+        axios.get(axios.defaults.baseURL + '/products')
+        .then(function (response) {
+          console.log(response)
+        })
+        .catch(function (error) {
+          console.log(error)
+        })
+      } else if (route === '/shoppingcart/') {
+        try {
+          this.items = await axios.get(axios.defaults.baseURL + '/shoppingCarts/fWDECQnZuy')
+          console.log(this.items)
+        } catch (e) {
+          console.log(e)
+        }
+      }
     }
   }
 }

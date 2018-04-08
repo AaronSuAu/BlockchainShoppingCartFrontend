@@ -8,11 +8,11 @@ Vue.use(Vuex)
 
 export default new Vuex.Store({
   state: {
-    walletAddr: ''
+    userInfo: undefined
   },
   mutations: {
-    UPDATE_WALLET_ADDR (state, addr) {
-      state.walletAddr = addr
+    UPDATE_USER_INFO (state, info) {
+      state.userInfo = info
     }
   }
 })

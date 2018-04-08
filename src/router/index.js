@@ -4,6 +4,7 @@ import Dashboard from '@/components/Dashboard'
 import Register from '@/components/Register'
 import SellNewItem from '../components/SellNewItem.vue'
 import ItemList from '@/components/ItemList'
+import Login from '../../src/components/Login.vue'
 
 Vue.use(Router)
 export default new Router({
@@ -14,9 +15,14 @@ export default new Router({
       component: Dashboard
     },
     {
-      path: '/register',
+      path: '/register/:addr',
       name: 'register',
       component: Register
+    },
+    {
+      path: '/login',
+      name: 'login',
+      component: Login
     },
     {
       path: '/sell-new',
@@ -25,27 +31,27 @@ export default new Router({
     },
     {
       path: '/search',
-      name: 'itemList',
+      name: 'search',
       component: ItemList
     },
     {
       path: '/shoppingcart',
-      name: 'itemList',
+      name: 'shoppingcart',
       component: ItemList
     },
     {
       path: '/selling',
-      name: 'itemList',
+      name: 'selling',
       component: ItemList
     },
     {
       path: '/history',
-      name: 'itemList',
+      name: 'history',
       component: ItemList
     },
     {
       path: '/purchased',
-      name: 'itemList',
+      name: 'purchased',
       component: ItemList
     }
   ]

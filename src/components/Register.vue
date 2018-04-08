@@ -2,19 +2,18 @@
   <div style="padding: 20px 300px">
     <h3>Please Register Your Details</h3><br>
     <form>
+      <p v-for="error in errors" class="error-msg">
+        {{error}}
+      </p>
       <div class="form-group">
-        <label for="name">Product Name</label>
-        <input type="text" class="form-control" id="name" placeholder="Enter Product Name" v-model="formData.name">
+        <label for="name">User Name</label>
+        <input type="text" class="form-control" id="name" placeholder="Enter your user Name" v-model.trim="formData.name">
       </div>
       <div class="form-group">
-        <label for="email">Product Name</label>
-        <input type="text" class="form-control" id="email" placeholder="Enter Email Address" v-model="formData.email">
+        <label for="email">Email</label>
+        <input type="text" class="form-control" id="email" placeholder="Enter Email Address" v-model.trim="formData.email">
       </div>
-      <div class="form-group">
-        <label for="address">Product Name</label>
-        <input type="text" class="form-control" id="address" placeholder="Enter Your Address" v-model="formData.address">
-      </div>
-      <button type="submit" class="btn btn-primary">Submit</button>
+      <button type="submit" class="btn btn-primary" @click="register">Submit</button>
     </form>
   </div>
 </template>
@@ -27,7 +26,20 @@
         formData: {
           name: '',
           email: '',
-          address: ''
+          address: this.$route.params.addr
+        },
+        errors: []
+      }
+    },
+    methods: {
+      async register () {
+        try {
+          let res = await this.$http.post('/user', this.formData)
+          this.$store.commit('UPDATE_USER_INFO', res.data)
+          console.log(this.$store.state.userInfo)
+          this.$router.push('/')
+        } catch (e) {
+          this.errors = e.response.data.errors
         }
       }
     }

@@ -24,24 +24,12 @@ window.addEventListener('load', function () {
   axios.defaults.headers.post['Content-Type'] = 'application/json'
   axios.defaults.baseURL = 'http://192.168.99.100/api'
   Vue.prototype.$http = axios
-  // get web3 provider
-  window.web3.eth.getAccounts().then(function (addr) {
-    store.commit('UPDATE_WALLET_ADDR', addr[0])
-  })
   // set router
   router.beforeEach((to, from, next) => {
-    if (to.path === '/register') {
+    if (store.state.userInfo || to.path === '/login' || to.path.includes('register/')) {
       next()
     } else {
-      axios.get('/user/' + store.state.walletAddr)
-        .then((response) => {
-          console.log(response)
-          next()
-        })
-        .catch((error) => {
-          console.log(error.response.data)
-          next('/register')
-        })
+      next('/login')
     }
   })
   /* eslint-disable no-new */

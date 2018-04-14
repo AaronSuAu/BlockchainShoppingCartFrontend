@@ -1,7 +1,7 @@
 <template>
   <div class="container" id="itemList">
-    <div v-if="items.length !== 0">
-      <template v-for="item in items">
+    <div v-if="items != null">
+      <template v-for="item in items.data">
         <div class="row item-margin-top-list">
           <div class="col-md-3">  
             <img :src="item.image_url"
@@ -9,7 +9,8 @@
           </div>
           <div class="col-md-6 text-left">
             <span>Name: {{item.name}} </span><br/>
-            <span>Quantity: {{item.quantity}}</span><br/>
+            <span v-if="$route.path === '/shoppingcart'">Storage: {{item.quantity}}</span>
+            <span v-else>Quantity: {{item.quantity}}</span><br/>
             <span>Price: {{item.price}}</span><br/>
             <span>Description: {{item.description}}</span>
           </div>
@@ -18,8 +19,9 @@
             <button class="btn btn-primary btn-block btn-margin-top" @click="addItemToShoppingCart(item)">Add to Shopping Cart</button>
           </div>
           <div v-else-if="$route.path === '/shoppingcart'" class="col-md-3">
-            <input type="number" name="quantity" placeholder="Quantity">
+            <input type="number" name="quantity" placeholder="Quantity" v-model="item.amountToBuy">
             <button class="btn btn-primary btn-block btn-margin-top" @click="buyItem(item)">Buy</button>
+            <button class="btn btn-danger btn-block btn-margin-top" @click="deleteItemFromShoppingCart(item)">Delete</button>
           </div>
           <div v-else-if="$route.path === '/selling'" class="col-md-3">
             <!-- <input type="number" name="quantity" placeholder="Quantity"> -->
@@ -35,6 +37,18 @@
           </div>
         </div>
       </template>
+      <div class="row">
+        <div v-if="items.next_page_url != null">
+          <div class="col-md-2">
+            <button class="btn btn-info" @click="paginate(items.next_page_url)">Next</button>
+          </div>
+        </div>
+        <div v-if="items.prev_page_url != null">
+          <button class="btn btn-danger" @click="paginate(items.prev_page_url)">Prev</button>
+        </div>
+      </div>
+      
+      
     </div>
     <div v-else>
       Empty
@@ -54,16 +68,60 @@ export default {
   //   this.fetchData(this.$route.path)
   // },
   asyncComputed: {
-    items: async function () {
-      return this.fetchData(this.$route.path)
+    items: {
+      get () {
+        return this.fetchData(this.$route.path)
+      }
     }
   },
   methods: {
-    addItemToShoppingCart (item) {
-      alert('Add Item To Shopping Cart' + item.product_id)
+    async paginate (url) {
+      try {
+        url = url.replace('http://192.168.99.100/api', '')
+        let response = await this.$http.get(url)
+        // console.log(response)
+        this.items = response.data
+      } catch (e) {
+        console.log(e)
+        alert('error, try again')
+      }
+    },
+    async deleteItemFromShoppingCart (item) {
+      try {
+        const address = this.$store.state.userInfo.address
+        console.log(item.shopping_carts_id)
+        await this.$http.delete('/shoppingCarts/' + item.shopping_carts_id + '/' + address)
+        alert('Success')
+        this.items = await this.fetchData(this.$route.path)
+      } catch (e) {
+        console.log(e)
+        alert('Error, try again')
+      }
+    },
+    async addItemToShoppingCart (item) {
+      try {
+        console.log(item.id)
+        await this.$http.post('/shoppingCarts/' + this.$store.state.userInfo.address, {
+          product_id: item.id,
+          quantity: 1
+        })
+        alert('Success')
+      } catch (e) {
+        console.log(e)
+        alert('Error, try again')
+      }
     },
     buyItem (item) {
-      alert('Buy ' + item.product_id)
+      console.log(item.amountToBuy)
+      if (item.amountToBuy == null) {
+        alert('Enter the amount you want to buy')
+      }
+      if (item.amountToBuy > item.quantity) {
+        alert('The number should be smaller than the storage number')
+        return
+      }
+      console.log(JSON.stringify(item))
+      console.log('user address', this.$store.state.userInfo.address)
     },
     updateItem (item) {
       alert('Update ' + item.product_id)
@@ -71,8 +129,13 @@ export default {
     async fetchData (route) {
       let response
       if (route === '/search') {
+        console.log(this.$route.query.keyword)
         try {
-          response = await this.$http.get('/products')
+          if (this.$route.query.keyword == null) {
+            response = await this.$http.get('/products')
+          } else {
+            response = await this.$http.get('/searchproducts/' + this.$route.query.keyword)
+          }
           // console.log(JSON.stringify(response))
         } catch (e) {
           alert('Error, try again')
@@ -81,6 +144,13 @@ export default {
         console.log('shopping cart')
         try {
           response = await this.$http.get('/shoppingCarts/' + this.$store.state.userInfo.address)
+          // console.log(JSON.stringify(response))
+        } catch (e) {
+          alert('Error, try again')
+        }
+      } else if (route === '/selling') {
+        try {
+          response = await this.$http.get('/products/' + this.$store.state.userInfo.address)
           // console.log(JSON.stringify(response))
         } catch (e) {
           alert('Error, try again')

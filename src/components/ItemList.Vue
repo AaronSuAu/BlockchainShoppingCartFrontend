@@ -1,6 +1,6 @@
 <template>
   <div class="container" id="itemList">
-    <div v-if="items != null">
+    <div v-if="items != null && items.data.length > 0">
       <template v-for="item in items.data">
         <div class="row item-margin-top-list">
           <div class="col-md-3">  
@@ -77,10 +77,15 @@ export default {
   methods: {
     async paginate (url) {
       try {
-        url = url.replace('http://192.168.99.100/api', '')
-        let response = await this.$http.get(url)
+        // url = url.replace('http://192.168.99.100/api', '')
+        // let response = await this.$http.get(url)
         // console.log(response)
+        let response = await this.$http({
+          method: 'get',
+          url: url
+        })
         this.items = response.data
+        console.log(this.items)
       } catch (e) {
         console.log(e)
         alert('error, try again')

@@ -6,6 +6,9 @@ import Web3 from 'web3'
 import router from './router'
 import store from './store'
 import axios from 'axios'
+import VueClip from 'vue-clip'
+
+Vue.use(VueClip)
 
 Vue.config.productionTip = false
 

@@ -22,17 +22,36 @@
         <input type="number" class="form-control" id="quantity" v-model="formData.quantity">
       </div>
       <div class="form-group">
-        <label for="image">Product Image</label>
-        <input type="file" class="form-control-file" id="image">
+        <label>Product Image</label>
+        <!--<input type="file" class="form-control-file" id="image">-->
+        <p>only one jpg/png image accepted</p>
+        <vue-clip :options="options" :on-complete="complete">
+          <template slot="clip-uploader-action">
+            <div>
+              <div class="dz-message"><button> Click to choose image</button></div>
+            </div>
+          </template>
+
+          <template slot="clip-uploader-body" scope="props">
+            <div v-for="(file,index) in props.files">
+              <img :src="file.dataUrl" />
+              {{ file.name }} {{ file.status }}
+            </div>
+          </template>
+
+        </vue-clip>
+
       </div>
       <div class="form-group">
         <label>Product Category</label>
-        <select class="form-control" v-model="formData.category">
-          <option>Food</option>
+        <select class="form-control" v-model.number="formData.category_id">
+          <option>1</option>
+          <option>2</option>
           <option>Other</option>
         </select>
       </div>
-      <button type="submit" class="btn btn-primary">Submit</button>
+      <p v-for="err in errors" style="color: red">{{err}}</p>
+      <button type="submit" class="btn btn-primary" @click="submit">Submit</button>
     </form>
   </div>
 </template>
@@ -42,14 +61,47 @@
     name: 'register',
     data () {
       return {
+        errors: {},
+        options: {
+          url: 'http://192.168.99.100/api/image',
+          maxFilesize: {
+            limit: 2,
+            message: 'Only image smaller than 2MB accepted'
+          },
+          maxFiles: {
+            limit: 1,
+            message: 'You can only upload a max of one image'
+          },
+          acceptedFiles: {
+            extensions: ['image/*'],
+            message: 'You are uploading an invalid file'
+          },
+          paramName: 'images'
+        },
         formData: {
           name: '',
           description: '',
           price: 0,
           quantity: 1,
-          imageUrl: '',
-          category: ''
+          image_url: '',
+          category_id: ''
         }
+      }
+    },
+    methods: {
+      complete (file, status, xhr) {
+        this.formData.image_url = xhr.response
+      },
+      submit () {
+        console.log(JSON.stringify(this.formData))
+        this.$http.post('/products/' + this.$store.state.userInfo.address, this.formData)
+          .then(function (res) {
+            alert('New product uploaded!')
+            this.$router.push('/selling')
+          }.bind(this))
+          .catch(function (err) {
+            this.errors = err.response.data.errors
+          }.bind(this))
       }
     }
   }

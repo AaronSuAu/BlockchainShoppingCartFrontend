@@ -31,8 +31,9 @@
           </li>
         </ul>
         <form class="form-inline my-2 my-lg-0">
-          <input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search" style="width: 600px">
-          <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
+          <input class="form-control mr-sm-2" type="search" 
+            placeholder="Search" aria-label="Search" style="width: 600px" v-model="keyword">
+          <button class="btn btn-outline-success my-2 my-sm-0" @click="searchByKeyword(keyword)">Search</button>
           <ul class="navbar-nav mr-auto" style="margin-left:20px">
             <li class="nav-item active">
               <router-link to="/search" class="nav-link">Hello, {{username}}</router-link>
@@ -50,6 +51,16 @@
     computed: {
       username () {
         return this.$store.state.userInfo ? this.$store.state.userInfo.name : ''
+      }
+    },
+    data () {
+      return {
+        keyword: ''
+      }
+    },
+    methods: {
+      searchByKeyword (keyword) {
+        this.$router.push('/search?keyword=' + keyword)
       }
     }
   }

@@ -1,40 +1,58 @@
 <template>
   <div class="container" id="itemList">
-    {{$route.path}}
-    <template v-for="item in items">
-      <div class="row item-margin-top-list">
-        <div class="col-md-3">  
-          <img :src="item.image_url"
-          alt="image" class="item-in-list">
+    <div v-if="items != null">
+      <template v-for="item in items.data">
+        <div class="row item-margin-top-list">
+          <div class="col-md-3">  
+            <img :src="item.image_url"
+            alt="image" class="item-in-list">
+          </div>
+          <div class="col-md-6 text-left">
+            <span>Name: {{item.name}} </span><br/>
+            <span v-if="$route.path === '/shoppingcart'">Storage: {{item.quantity}}</span>
+            <span v-else>Quantity: {{item.quantity}}</span><br/>
+            <span>Price: {{item.price}}</span><br/>
+            <span>Description: {{item.description}}</span>
+          </div>
+          <div v-if="$route.path === '/search'" class="col-md-3">
+            <!-- <input type="number" name="quantity" placeholder="Quantity"> -->
+            <button class="btn btn-primary btn-block btn-margin-top" @click="addItemToShoppingCart(item)">Add to Shopping Cart</button>
+          </div>
+          <div v-else-if="$route.path === '/shoppingcart'" class="col-md-3">
+            <input type="number" name="quantity" placeholder="Quantity" v-model="item.amountToBuy">
+            <button class="btn btn-primary btn-block btn-margin-top" @click="buyItem(item)">Buy</button>
+            <button class="btn btn-danger btn-block btn-margin-top" @click="deleteItemFromShoppingCart(item)">Delete</button>
+          </div>
+          <div v-else-if="$route.path === '/selling'" class="col-md-3">
+            <!-- <input type="number" name="quantity" placeholder="Quantity"> -->
+            <button class="btn btn-primary btn-block btn-margin-top" @click="updateItem(item)">Edit</button>
+          </div>
+          <div v-else-if="$route.path === '/sold'" class="col-md-3">
+            <span> Quantity: ???? </span>
+            <!-- <button class="btn btn-primary btn-block btn-margin-top" @click="updateItem(item)">Edit</button> -->
+          </div>
+          <div v-else-if="$route.path === '/purchased'" class="col-md-3">
+            <span> Quantity: ???? </span>
+            <!-- <button class="btn btn-primary btn-block btn-margin-top" @click="updateItem(item)">Edit</button> -->
+          </div>
         </div>
-        <div class="col-md-6 text-left">
-          <span>Name: {{item.name}} </span><br/>
-          <span>Quantity: {{item.quantity}}</span><br/>
-          <span>Price: {{item.price}}</span><br/>
-          <span>Description: {{item.description}}</span>
+      </template>
+      <div class="row">
+        <div v-if="items.next_page_url != null">
+          <div class="col-md-2">
+            <button class="btn btn-info" @click="paginate(items.next_page_url)">Next</button>
+          </div>
         </div>
-        <div v-if="$route.path === '/search'" class="col-md-3">
-          <!-- <input type="number" name="quantity" placeholder="Quantity"> -->
-          <button class="btn btn-primary btn-block btn-margin-top" @click="addItemToShoppingCart(item)">Add to Shopping Cart</button>
-        </div>
-        <div v-else-if="$route.path === '/shoppingcart'" class="col-md-3">
-          <input type="number" name="quantity" placeholder="Quantity">
-          <button class="btn btn-primary btn-block btn-margin-top" @click="buyItem(item)">Buy</button>
-        </div>
-        <div v-else-if="$route.path === '/selling'" class="col-md-3">
-          <!-- <input type="number" name="quantity" placeholder="Quantity"> -->
-          <button class="btn btn-primary btn-block btn-margin-top" @click="updateItem(item)">Edit</button>
-        </div>
-        <div v-else-if="$route.path === '/sold'" class="col-md-3">
-          <span> Quantity: ???? </span>
-          <!-- <button class="btn btn-primary btn-block btn-margin-top" @click="updateItem(item)">Edit</button> -->
-        </div>
-        <div v-else-if="$route.path === '/purchased'" class="col-md-3">
-          <span> Quantity: ???? </span>
-          <!-- <button class="btn btn-primary btn-block btn-margin-top" @click="updateItem(item)">Edit</button> -->
+        <div v-if="items.prev_page_url != null">
+          <button class="btn btn-danger" @click="paginate(items.prev_page_url)">Prev</button>
         </div>
       </div>
-    </template>  
+      
+      
+    </div>
+    <div v-else>
+      Empty
+    </div>  
   </div>
 </template>
 
@@ -43,35 +61,102 @@ export default {
   name: 'itemList',
   data () {
     return {
-      items: [
-        { image_url: 'http://icons.iconarchive.com/icons/paomedia/small-n-flat/1024/cat-icon.png',
-          quantity: '12',
-          name: 'Foo',
-          Description: 'description',
-          owner_id: 12,
-          category: 3,
-          product_id: 1
-        },
-        { image_url: 'http://icons.iconarchive.com/icons/paomedia/small-n-flat/1024/cat-icon.png',
-          quantity: '11',
-          name: 'Boo',
-          Description: 'description2',
-          owner_id: 19,
-          category: 5,
-          product_id: 2
-        }
-      ]
+    }
+  },
+  // mounted () {
+  //   console.log('init')
+  //   this.fetchData(this.$route.path)
+  // },
+  asyncComputed: {
+    items: {
+      get () {
+        return this.fetchData(this.$route.path)
+      }
     }
   },
   methods: {
-    addItemToShoppingCart (item) {
-      alert('Add Item To Shopping Cart' + item.product_id)
+    async paginate (url) {
+      try {
+        url = url.replace('http://192.168.99.100/api', '')
+        let response = await this.$http.get(url)
+        // console.log(response)
+        this.items = response.data
+      } catch (e) {
+        console.log(e)
+        alert('error, try again')
+      }
+    },
+    async deleteItemFromShoppingCart (item) {
+      try {
+        const address = this.$store.state.userInfo.address
+        console.log(item.shopping_carts_id)
+        await this.$http.delete('/shoppingCarts/' + item.shopping_carts_id + '/' + address)
+        alert('Success')
+        this.items = await this.fetchData(this.$route.path)
+      } catch (e) {
+        console.log(e)
+        alert('Error, try again')
+      }
+    },
+    async addItemToShoppingCart (item) {
+      try {
+        console.log(item.id)
+        await this.$http.post('/shoppingCarts/' + this.$store.state.userInfo.address, {
+          product_id: item.id,
+          quantity: 1
+        })
+        alert('Success')
+      } catch (e) {
+        console.log(e)
+        alert('Error, try again')
+      }
     },
     buyItem (item) {
-      alert('Buy ' + item.product_id)
+      console.log(item.amountToBuy)
+      if (item.amountToBuy == null) {
+        alert('Enter the amount you want to buy')
+      }
+      if (item.amountToBuy > item.quantity) {
+        alert('The number should be smaller than the storage number')
+        return
+      }
+      console.log(JSON.stringify(item))
+      console.log('user address', this.$store.state.userInfo.address)
     },
     updateItem (item) {
       alert('Update ' + item.product_id)
+    },
+    async fetchData (route) {
+      let response
+      if (route === '/search') {
+        console.log(this.$route.query.keyword)
+        try {
+          if (this.$route.query.keyword == null) {
+            response = await this.$http.get('/products')
+          } else {
+            response = await this.$http.get('/searchproducts/' + this.$route.query.keyword)
+          }
+          // console.log(JSON.stringify(response))
+        } catch (e) {
+          alert('Error, try again')
+        }
+      } else if (route === '/shoppingcart') {
+        console.log('shopping cart')
+        try {
+          response = await this.$http.get('/shoppingCarts/' + this.$store.state.userInfo.address)
+          // console.log(JSON.stringify(response))
+        } catch (e) {
+          alert('Error, try again')
+        }
+      } else if (route === '/selling') {
+        try {
+          response = await this.$http.get('/products/' + this.$store.state.userInfo.address)
+          // console.log(JSON.stringify(response))
+        } catch (e) {
+          alert('Error, try again')
+        }
+      }
+      return response.data
     }
   }
 }

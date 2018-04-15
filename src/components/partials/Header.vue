@@ -36,7 +36,7 @@
           <button class="btn btn-outline-success my-2 my-sm-0" @click="searchByKeyword(keyword)">Search</button>
           <ul class="navbar-nav mr-auto" style="margin-left:20px">
             <li class="nav-item active">
-              <router-link to="/search" class="nav-link">Hello, XXXXXXXX</router-link>
+              <router-link to="/search" class="nav-link">Hello, {{username}}</router-link>
             </li>
         </ul>
         </form>
@@ -48,6 +48,11 @@
 <script>
   export default {
     name: 'header',
+    computed: {
+      username () {
+        return this.$store.state.userInfo ? this.$store.state.userInfo.name : ''
+      }
+    },
     data () {
       return {
         keyword: ''

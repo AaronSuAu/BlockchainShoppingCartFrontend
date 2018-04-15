@@ -129,7 +129,7 @@ export default {
       console.log('user address', this.$store.state.userInfo.address)
     },
     updateItem (item) {
-      alert('Update ' + item.product_id)
+      this.$router.push({name: 'update-item', params: {item: item}})
     },
     async fetchData (route) {
       let response

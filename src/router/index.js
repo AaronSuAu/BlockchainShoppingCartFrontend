@@ -5,6 +5,7 @@ import Register from '@/components/Register'
 import SellNewItem from '../components/SellNewItem.vue'
 import ItemList from '@/components/ItemList'
 import Login from '../../src/components/Login.vue'
+import UpdateItem from '../../src/components/UpdateSellingItem.vue'
 
 Vue.use(Router)
 export default new Router({
@@ -53,6 +54,11 @@ export default new Router({
       path: '/purchased',
       name: 'purchased',
       component: ItemList
+    },
+    {
+      path: '/update-item',
+      name: 'update-item',
+      component: UpdateItem
     }
   ]
 })

@@ -8,6 +8,7 @@ import router from './router'
 import store from './store'
 import axios from 'axios'
 import VueClip from 'vue-clip'
+import tranactionJson from '../src/abi/transaction.json'
 
 Vue.use(VueClip)
 
@@ -23,6 +24,9 @@ window.addEventListener('load', function () {
     // fallback - use your fallback strategy (local node / hosted node + in-dapp id mgmt / fail)
     window.web3 = new Web3(new Web3.providers.HttpProvider('http://localhost:8545'))
   }
+  // test contract
+  var Coursetro = new window.web3.eth.Contract(tranactionJson, '0x352D1589373B1fff755A0929955c5Db28b70248C')
+  console.log(Coursetro)
   // set axios
   axios.defaults.timeout = 5000
   axios.defaults.headers.post['Content-Type'] = 'application/json'

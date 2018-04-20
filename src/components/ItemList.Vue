@@ -27,12 +27,12 @@
             <!-- <input type="number" name="quantity" placeholder="Quantity"> -->
             <button class="btn btn-primary btn-block btn-margin-top" @click="updateItem(item)">Edit</button>
           </div>
-          <div v-else-if="$route.path === '/sold'" class="col-md-3">
-            <span> Quantity: ???? </span>
+          <div v-else-if="$route.path === '/history'" class="col-md-3">
+            <span> Quantity: 1 </span>
             <!-- <button class="btn btn-primary btn-block btn-margin-top" @click="updateItem(item)">Edit</button> -->
           </div>
           <div v-else-if="$route.path === '/purchased'" class="col-md-3">
-            <span> Quantity: ???? </span>
+            <span> Quantity: 1 </span>
             <!-- <button class="btn btn-primary btn-block btn-margin-top" @click="updateItem(item)">Edit</button> -->
           </div>
         </div>
@@ -172,24 +172,41 @@ export default {
           alert('Error, try again')
         }
       } else {
-        this.$transaction.events.LogTransfer({fromBlock: 0, toBlock: 'latest'},
-          function (error, event) {
+        console.log(route)
+        var productIds = []
+        await this.$transaction.getPastEvents('LogTransfer',
+          {
+            filter: {sender: '0xd7f56927b3d89ac99622ddbfad9372c503d883ef'},
+            fromBlock: 0,
+            toBlock: 'latest'
+          },
+          function (error, events) {
             if (error) {
               console.log(error)
             } else {
-              console.log(event)
+              // console.log(events)
+              for (let e of events) {
+                if (route === '/purchased') {
+                  if (e.returnValues.from === this.$store.state.userInfo.address) {
+                    productIds.push(e.returnValues.productId)
+                  }
+                } else if (route === '/history') {
+                  if (e.returnValues.to === this.$store.state.userInfo.address) {
+                    productIds.push(e.returnValues.productId)
+                  }
+                }
+              }
+              // console.log(events)
             }
-          })
-        /*
-        this.$transaction.getPastEvents('LogTransfer', {filter: {amount: [0, 9999999999]}}, function (error, event) {
-          if (error) {
-            console.log(JSON.stringify(error))
-          } else {
-            console.log(event)
-          }
-        })
-        */
-        return null
+          }.bind(this))
+        console.log(productIds)
+        try {
+          response = await this.$http.post('/listproducts', {ids: productIds})
+          console.log(JSON.stringify({data: response.data}))
+          return {data: response.data}
+        } catch (e) {
+          alert('Error, try again')
+        }
       }
       return response.data
     }

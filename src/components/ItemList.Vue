@@ -66,7 +66,9 @@ export default {
   asyncComputed: {
     items: {
       get () {
-        console.log(this.$transaction)
+        this.$transaction.methods.balances(this.$store.state.userInfo.address).call()
+        .then((response) => console.log(response))
+        .catch((error) => console.log(error))
         return this.fetchData(this.$route.path)
       }
     }
@@ -122,6 +124,19 @@ export default {
         alert('The number should be smaller than the storage number')
         return
       }
+      let price = parseInt(item.price, 10)
+      let priceStr = price.toString()
+      console.log(priceStr)
+
+      this.$transaction.methods.deposit(price).send({
+        from: this.$store.state.userInfo.address,
+        gas: 300000,
+        value: window.web3.utils.toWei(priceStr, 'ether')})
+      .then(function (response) {
+        console.log(response)
+        // this.$transaction.methods.transfer(item.owner_address, parseInt(item.price, 10), item.id)
+      })
+      .catch((response) => alert(response))
       console.log(JSON.stringify(item))
       console.log('user address', this.$store.state.userInfo.address)
     },
@@ -131,7 +146,6 @@ export default {
     async fetchData (route) {
       let response
       if (route === '/search') {
-        console.log(this.$route.query.keyword)
         try {
           if (this.$route.query.keyword == null) {
             response = await this.$http.get('/products')

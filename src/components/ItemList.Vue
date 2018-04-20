@@ -63,10 +63,6 @@ export default {
     return {
     }
   },
-  // mounted () {
-  //   console.log('init')
-  //   this.fetchData(this.$route.path)
-  // },
   asyncComputed: {
     items: {
       get () {
@@ -161,6 +157,25 @@ export default {
         } catch (e) {
           alert('Error, try again')
         }
+      } else {
+        this.$transaction.events.LogTransfer({fromBlock: 0, toBlock: 'latest'},
+          function (error, event) {
+            if (error) {
+              console.log(error)
+            } else {
+              console.log(event)
+            }
+          })
+        /*
+        this.$transaction.getPastEvents('LogTransfer', {filter: {amount: [0, 9999999999]}}, function (error, event) {
+          if (error) {
+            console.log(JSON.stringify(error))
+          } else {
+            console.log(event)
+          }
+        })
+        */
+        return null
       }
       return response.data
     }

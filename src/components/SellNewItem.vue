@@ -96,6 +96,7 @@
         console.log(JSON.stringify(this.formData))
         this.$http.post('/products/' + this.$store.state.userInfo.address, this.formData)
           .then(function (res) {
+            // console.log(JSON.stringify(res))
             alert('New product uploaded!')
             this.$router.push('/selling')
           }.bind(this))

@@ -31,12 +31,12 @@
             <button class="btn btn-primary btn-block btn-margin-top" @click="updateItem(item)">Edit</button>
             <button class="btn btn-danger btn-block btn-margin-top" @click="deleteMyItem(item)">Delete</button>
           </div>
-          <div v-else-if="$route.path === '/sold'" class="col-md-3">
-            <span> Quantity: ???? </span>
+          <div v-else-if="$route.path === '/history'" class="col-md-3">
+            <span> Quantity: 1 </span>
             <!-- <button class="btn btn-primary btn-block btn-margin-top" @click="updateItem(item)">Edit</button> -->
           </div>
           <div v-else-if="$route.path === '/purchased'" class="col-md-3">
-            <span> Quantity: ???? </span>
+            <span> Quantity: 1 </span>
             <!-- <button class="btn btn-primary btn-block btn-margin-top" @click="updateItem(item)">Edit</button> -->
           </div>
         </div>
@@ -65,10 +65,6 @@ export default {
     return {
     }
   },
-  // mounted () {
-  //   console.log('init')
-  //   this.fetchData(this.$route.path)
-  // },
   asyncComputed: {
     items: {
       get () {
@@ -198,6 +194,42 @@ export default {
         try {
           response = await this.$http.get('/products/' + this.$store.state.userInfo.address)
           // console.log(JSON.stringify(response))
+        } catch (e) {
+          alert('Error, try again')
+        }
+      } else {
+        console.log(route)
+        var productIds = []
+        await this.$transaction.getPastEvents('LogTransfer',
+          {
+            filter: {sender: '0xd7f56927b3d89ac99622ddbfad9372c503d883ef'},
+            fromBlock: 0,
+            toBlock: 'latest'
+          },
+          function (error, events) {
+            if (error) {
+              console.log(error)
+            } else {
+              // console.log(events)
+              for (let e of events) {
+                if (route === '/purchased') {
+                  if (e.returnValues.from === this.$store.state.userInfo.address) {
+                    productIds.push(e.returnValues.productId)
+                  }
+                } else if (route === '/history') {
+                  if (e.returnValues.to === this.$store.state.userInfo.address) {
+                    productIds.push(e.returnValues.productId)
+                  }
+                }
+              }
+              // console.log(events)
+            }
+          }.bind(this))
+        console.log(productIds)
+        try {
+          response = await this.$http.post('/listproducts', {ids: productIds})
+          console.log(JSON.stringify({data: response.data}))
+          return {data: response.data}
         } catch (e) {
           alert('Error, try again')
         }

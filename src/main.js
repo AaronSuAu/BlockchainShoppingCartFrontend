@@ -25,8 +25,8 @@ window.addEventListener('load', function () {
     window.web3 = new Web3(new Web3.providers.HttpProvider('http://localhost:8545'))
   }
   // test contract
-  var Coursetro = new window.web3.eth.Contract(tranactionJson, '0x352D1589373B1fff755A0929955c5Db28b70248C')
-  console.log(Coursetro)
+  var transactionInstance = new window.web3.eth.Contract(tranactionJson, '0x352D1589373B1fff755A0929955c5Db28b70248C')
+  console.log(transactionInstance)
   // set axios
   axios.defaults.timeout = 5000
   axios.defaults.headers.post['Content-Type'] = 'application/json'
@@ -40,6 +40,9 @@ window.addEventListener('load', function () {
       next('/login')
     }
   })
+  transactionInstance.methods.deposit(1).send({from: '0x77346ca9e39DB4740f5f0C23A4b548157CC7Bfe8'})
+  .then((response) => console.log(response))
+  .catch((error) => console.log(error))
   /* eslint-disable no-new */
   Vue.use(AsyncComputed)
   new Vue({

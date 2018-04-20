@@ -2,8 +2,8 @@ pragma solidity ^0.4.11;
 
 contract Transaction {
 
-   mapping (address => uint256) public balances;
-   uint public constant price = 1 ether;
+   mapping (address => uint) public balances;
+   uint public constant price = 1 finney;
    event LogTransfer(address sender, address to, uint amount, uint productId);
     
     function deposit(uint amount) payable  {
@@ -18,7 +18,7 @@ contract Transaction {
             throw;
         }
         balances[msg.sender] -= amount;
-        msg.sender.transfer(amount);
+        msg.sender.transfer(amount * price);
     }
 
     function transfer(address to, uint amount, uint productId) {

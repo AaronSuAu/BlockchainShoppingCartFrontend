@@ -1,6 +1,9 @@
 <template>
   <div class="container" id="itemList">
     <div v-if="items != null && items.data.length > 0">
+      <div v-if="$route.path === '/shoppingcart'">
+        Current Balance: {{balance}} eth
+      </div>
       <template v-for="item in items.data">
         <div class="row item-margin-top-list">
           <div class="col-md-3">  
@@ -11,7 +14,7 @@
             <span>Name: {{item.name}} </span><br/>
             <span v-if="$route.path === '/shoppingcart'">Storage: {{item.quantity}}</span>
             <span v-else>Quantity: {{item.quantity}}</span><br/>
-            <span>Price: {{item.price}}</span><br/>
+            <span>Price: {{item.price}} eth</span><br/>
             <span>Description: {{item.description}}</span>
           </div>
           <div v-if="$route.path === '/search'" class="col-md-3">
@@ -26,6 +29,7 @@
           <div v-else-if="$route.path === '/selling'" class="col-md-3">
             <!-- <input type="number" name="quantity" placeholder="Quantity"> -->
             <button class="btn btn-primary btn-block btn-margin-top" @click="updateItem(item)">Edit</button>
+            <button class="btn btn-danger btn-block btn-margin-top" @click="deleteMyItem(item)">Delete</button>
           </div>
           <div v-else-if="$route.path === '/sold'" class="col-md-3">
             <span> Quantity: ???? </span>
@@ -46,9 +50,7 @@
         <div v-if="items.prev_page_url != null">
           <button class="btn btn-danger" @click="paginate(items.prev_page_url)">Prev</button>
         </div>
-      </div>
-      
-      
+      </div>  
     </div>
     <div v-else>
       Empty
@@ -75,6 +77,11 @@ export default {
         .catch((error) => console.log(error))
         return this.fetchData(this.$route.path)
       }
+    },
+    balance: {
+      get () {
+        return this.$getBalance()
+      }
     }
   },
   methods: {
@@ -92,6 +99,15 @@ export default {
       } catch (e) {
         console.log(e)
         alert('error, try again')
+      }
+    },
+    async deleteMyItem (item) {
+      try {
+        this.$http.delete('products/' + item.id + '/' + this.$store.state.userInfo.address)
+        alert('Success')
+        this.items = await this.fetchData(this.$route.path)
+      } catch (error) {
+        alert('Error, try again')
       }
     },
     async deleteItemFromShoppingCart (item) {
@@ -119,7 +135,7 @@ export default {
         alert('Error, try again')
       }
     },
-    buyItem (item) {
+    async buyItem (item) {
       console.log(item.amountToBuy)
       if (item.amountToBuy == null) {
         alert('Enter the amount you want to buy')
@@ -128,21 +144,31 @@ export default {
         alert('The number should be smaller than the storage number')
         return
       }
-      let price = parseInt(item.price, 10)
-      let priceStr = price.toString()
-      console.log(priceStr)
-
-      this.$transaction.methods.deposit(price).send({
-        from: this.$store.state.userInfo.address,
-        gas: 300000,
-        value: window.web3.utils.toWei(priceStr, 'ether')})
-      .then(function (response) {
-        console.log(response)
-        // this.$transaction.methods.transfer(item.owner_address, parseInt(item.price, 10), item.id)
-      })
-      .catch((response) => alert(response))
-      console.log(JSON.stringify(item))
-      console.log('user address', this.$store.state.userInfo.address)
+      let price = parseInt(item.price, 10) * item.amountToBuy
+      try {
+        let balance = await this.balance
+        console.log('before: ' + balance)
+        if (balance < price) {
+          alert('You don\'t have enough, You will be redirected to deposit page')
+          this.$router.push('/balance')
+        }
+        this.$transaction.methods.transfer('0xd7f56927b3d89ac99622ddbfad9372c503d883ef', parseInt(item.price * 1000, 10), item.id)
+        .send({
+          from: this.$store.state.userInfo.address,
+          gas: 400000
+        })
+        .then(function (response) {
+          this.$getBalance()
+          .then(function (response) {
+            this.balance = response
+            console.log(this.balance)
+          }.bind(this))
+          .catch((error) => console.log(error))
+        }.bind(this))
+        alert('Your transaction will be in the block chain after you submit')
+      } catch (error) {
+        alert(error)
+      }
     },
     updateItem (item) {
       this.$router.push({name: 'update-item', params: {item: item}})

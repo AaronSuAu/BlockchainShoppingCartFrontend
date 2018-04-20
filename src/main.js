@@ -33,6 +33,15 @@ window.addEventListener('load', function () {
   axios.defaults.baseURL = 'http://192.168.99.100/api'
   Vue.prototype.$http = axios
   Vue.prototype.$transaction = transactionInstance
+  Vue.prototype.$getBalance = async function () {
+    let response
+    try {
+      response = await this.$transaction.methods.balances(this.$store.state.userInfo.address).call()
+    } catch (error) {
+      console.log(error)
+    }
+    return response
+  }
   // set router
   router.beforeEach((to, from, next) => {
     if (store.state.userInfo || to.path === '/login' || to.path.includes('register/')) {

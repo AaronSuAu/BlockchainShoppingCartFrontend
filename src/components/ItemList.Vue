@@ -70,6 +70,7 @@ export default {
   asyncComputed: {
     items: {
       get () {
+        console.log(this.$transaction)
         return this.fetchData(this.$route.path)
       }
     }

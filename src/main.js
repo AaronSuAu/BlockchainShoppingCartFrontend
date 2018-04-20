@@ -32,6 +32,7 @@ window.addEventListener('load', function () {
   axios.defaults.headers.post['Content-Type'] = 'application/json'
   axios.defaults.baseURL = 'http://192.168.99.100/api'
   Vue.prototype.$http = axios
+  Vue.prototype.$transaction = transactionInstance
   // set router
   router.beforeEach((to, from, next) => {
     if (store.state.userInfo || to.path === '/login' || to.path.includes('register/')) {
@@ -40,9 +41,9 @@ window.addEventListener('load', function () {
       next('/login')
     }
   })
-  transactionInstance.methods.deposit(1).send({from: '0x77346ca9e39DB4740f5f0C23A4b548157CC7Bfe8'})
-  .then((response) => console.log(response))
-  .catch((error) => console.log(error))
+  // transactionInstance.methods.deposit(1).send({from: '0x77346ca9e39DB4740f5f0C23A4b548157CC7Bfe8'})
+  // .then((response) => console.log(response))
+  // .catch((error) => console.log(error))
   /* eslint-disable no-new */
   Vue.use(AsyncComputed)
   new Vue({

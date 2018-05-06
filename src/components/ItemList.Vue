@@ -205,11 +205,11 @@ export default {
               for (let e of events) {
                 if (route === '/purchased') {
                   if (e.returnValues.sender === this.$store.state.userInfo.address) {
-                    productIds.push({amount: e.returnValues.amount, productId: e.returnValues.productId})
+                    productIds.push({amount: e.returnValues.amount, id: e.returnValues.productId, quantity: e.returnValues.quantity})
                   }
                 } else if (route === '/history') {
                   if (e.returnValues.to === this.$store.state.userInfo.address) {
-                    productIds.push({amount: e.returnValues.amount, productId: e.returnValues.productId})
+                    productIds.push({amount: e.returnValues.amount, id: e.returnValues.productId, quantity: e.returnValues.quantity})
                   }
                 }
               }

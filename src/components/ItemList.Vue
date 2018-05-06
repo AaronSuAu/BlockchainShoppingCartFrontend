@@ -143,12 +143,18 @@ export default {
           value: window.web3.utils.toWei(price.toString(), 'finney')
         })
         .then(function (response) {
+          console.log('amount', amount)
           this.$http.post('/purchaseProducts', {
-            shoppingCartId: item.shopping_carts_id
-          }).then(function (res) {
-            // this.fetchData(this.$route.path)
+            shoppingCartId: item.shopping_carts_id,
+            quantity: amount
           })
-          alert('Success')
+        }.bind(this))
+        .then(function (res) {
+          this.fetchData(this.$route.path)
+          alert('success')
+        }.bind(this))
+        .then(function (res) {
+          this.items = res
         }.bind(this))
         .catch(function (response) {
           alert('Purchase fail')

@@ -33,7 +33,7 @@
             <!-- <button class="btn btn-primary btn-block btn-margin-top" @click="updateItem(item)">Edit</button> -->
           </div>
           <div v-else-if="$route.path === '/purchased'" class="col-md-3">
-            <span> Quantity: 1 </span>
+            <span> Quantity: {{item.amount}} </span>
             <!-- <button class="btn btn-primary btn-block btn-margin-top" @click="updateItem(item)">Edit</button> -->
           </div>
         </div>
@@ -88,7 +88,7 @@ export default {
     },
     async deleteMyItem (item) {
       try {
-        this.$http.delete('products/' + item.id + '/' + this.$store.state.userInfo.address)
+        await this.$http.delete('products/' + item.id + '/' + this.$store.state.userInfo.address)
         alert('Success')
         this.items = await this.fetchData(this.$route.path)
       } catch (error) {
@@ -194,7 +194,6 @@ export default {
         var productIds = []
         await this.$transaction.getPastEvents('LogTransfer',
           {
-            filter: {sender: '0xd7f56927b3d89ac99622ddbfad9372c503d883ef'},
             fromBlock: 0,
             toBlock: 'latest'
           },
@@ -205,12 +204,12 @@ export default {
               // console.log(events)
               for (let e of events) {
                 if (route === '/purchased') {
-                  if (e.returnValues.from === this.$store.state.userInfo.address) {
-                    productIds.push(e.returnValues.productId)
+                  if (e.returnValues.sender === this.$store.state.userInfo.address) {
+                    productIds.push({amount: e.returnValues.amount, productId: e.returnValues.productId})
                   }
                 } else if (route === '/history') {
                   if (e.returnValues.to === this.$store.state.userInfo.address) {
-                    productIds.push(e.returnValues.productId)
+                    productIds.push({amount: e.returnValues.amount, productId: e.returnValues.productId})
                   }
                 }
               }

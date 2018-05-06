@@ -5,18 +5,18 @@ contract Transaction {
    
    uint public constant price = 1 finney;
    address owner;
-   event LogTransfer(address sender, address to, uint amount, uint productId);
+   event LogTransfer(address sender, address to, uint amount, uint quantity, uint productId);
     
     function Transaction(){
         owner = msg.sender;
     }
     
-    function transfer(address to, uint amount, uint productId) payable {
+    function transfer(address to, uint amount, uint quantity, uint productId) payable {
         if (msg.value < (amount * price)) {
             throw;
         }
         to.transfer(amount * price);
-        LogTransfer(msg.sender, to, amount, productId);
+        LogTransfer(msg.sender, to, amount, quantity, productId);
     }
     
     function withdraw() {

@@ -1,9 +1,6 @@
 <template>
   <div class="dashboard">
     <h1>{{ msg }}</h1>
-    <div>
-      Welcome {{ pseudo }}. Destroy your account by clicking.
-    </div>
     <!--<div v-else>Sign up <router-link to="/signup">here</router-link>.</div>-->
   </div>
 </template>

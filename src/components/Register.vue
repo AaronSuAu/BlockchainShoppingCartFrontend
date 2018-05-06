@@ -33,6 +33,16 @@
     },
     methods: {
       async register () {
+        this.$http.post('/user', this.formData)
+          .then(function (res) {
+            this.$store.commit('UPDATE_USER_INFO', res.data)
+            console.log(this.$store.state.userInfo)
+            this.$router.push('/')
+          }.bind(this))
+          .catch(function (err) {
+            this.errors = err.response.data.errors
+          }.bind(this))
+        /*
         try {
           let res = await this.$http.post('/user', this.formData)
           this.$store.commit('UPDATE_USER_INFO', res.data)
@@ -41,6 +51,7 @@
         } catch (e) {
           this.errors = e.response.data.errors
         }
+        */
       }
     }
   }

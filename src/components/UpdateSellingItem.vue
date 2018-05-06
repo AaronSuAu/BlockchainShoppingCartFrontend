@@ -1,6 +1,5 @@
 <template>
   <div style="padding: 20px 300px">
-    {{$route.params.item}}
     <h3>Update Product</h3><br>
     <form>
       <div class="form-group">
@@ -25,7 +24,7 @@
       <div>
         <img :src="$route.params.item.image_url" width="200" height="200">
       </div>
-      <p v-for="err in errors" style="color: red">{{err}}</p>
+      <p v-for="err in errors" style="color: red">{{err}}</p><br>
       <button type="submit" class="btn btn-primary" @click="submit">Submit</button>
     </form>
   </div>

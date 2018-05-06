@@ -46,11 +46,9 @@
         <label>Product Category</label>
         <select class="form-control" v-model.number="formData.category_id">
           <option>1</option>
-          <option>2</option>
-          <option>Other</option>
         </select>
       </div>
-      <p v-for="err in errors" style="color: red">{{err}}</p>
+      <p style="color: red">{{errors}}</p>
       <button type="submit" class="btn btn-primary" @click="submit">Submit</button>
     </form>
   </div>
@@ -84,7 +82,7 @@
           price: 0,
           quantity: 1,
           image_url: '',
-          category_id: ''
+          category_id: 1
         }
       }
     },

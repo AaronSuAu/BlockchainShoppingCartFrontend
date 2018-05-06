@@ -192,7 +192,6 @@ export default {
         var productIds = []
         await this.$transaction.getPastEvents('LogTransfer',
           {
-            filter: {sender: '0xd7f56927b3d89ac99622ddbfad9372c503d883ef'},
             fromBlock: 0,
             toBlock: 'latest'
           },
@@ -203,7 +202,7 @@ export default {
               // console.log(events)
               for (let e of events) {
                 if (route === '/purchased') {
-                  if (e.returnValues.from === this.$store.state.userInfo.address) {
+                  if (e.returnValues.sender === this.$store.state.userInfo.address) {
                     productIds.push(e.returnValues.productId)
                   }
                 } else if (route === '/history') {

@@ -6,7 +6,6 @@ import SellNewItem from '../components/SellNewItem.vue'
 import ItemList from '@/components/ItemList'
 import Login from '../../src/components/Login.vue'
 import UpdateItem from '../../src/components/UpdateSellingItem.vue'
-import Balance from '../../src/components/Balance.vue'
 
 Vue.use(Router)
 export default new Router({
@@ -60,11 +59,6 @@ export default new Router({
       path: '/update-item',
       name: 'update-item',
       component: UpdateItem
-    },
-    {
-      path: '/balance',
-      name: 'balance',
-      component: Balance
     }
   ]
 })

@@ -25,7 +25,7 @@ window.addEventListener('load', function () {
     window.web3 = new Web3(new Web3.providers.HttpProvider('http://localhost:8545'))
   }
   // test contract
-  var transactionInstance = new window.web3.eth.Contract(tranactionJson, '0x6C6b8d3cC09041506508f725d5569911aD079C2F')
+  var transactionInstance = new window.web3.eth.Contract(tranactionJson, '0x50C76bEB0039d29c324ef29d426447e1D177C927')
   console.log(transactionInstance)
   // set axios
   axios.defaults.timeout = 5000
@@ -33,15 +33,6 @@ window.addEventListener('load', function () {
   axios.defaults.baseURL = 'http://192.168.99.100/api'
   Vue.prototype.$http = axios
   Vue.prototype.$transaction = transactionInstance
-  Vue.prototype.$getBalance = async function () {
-    let response
-    try {
-      response = await this.$transaction.methods.balances(this.$store.state.userInfo.address).call()
-    } catch (error) {
-      console.log(error)
-    }
-    return response
-  }
   // set router
   router.beforeEach((to, from, next) => {
     if (store.state.userInfo || to.path === '/login' || to.path.includes('register/')) {

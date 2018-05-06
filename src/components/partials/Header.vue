@@ -18,9 +18,6 @@
           <li class="nav-item">
             <router-link to="/purchased" class="nav-link">Purchased</router-link>
           </li>
-          <li class="nav-item">
-            <router-link to="/balance" class="nav-link">Balance</router-link>
-          </li>
           <li class="nav-item dropdown">
             <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown"
                aria-haspopup="true" aria-expanded="false">

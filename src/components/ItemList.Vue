@@ -1,9 +1,6 @@
 <template>
   <div class="container" id="itemList">
     <div v-if="items != null && items.data.length > 0">
-      <div v-if="$route.path === '/shoppingcart'">
-        Current Balance: {{balance}} eth
-      </div>
       <template v-for="item in items.data">
         <div class="row item-margin-top-list">
           <div class="col-md-3">  
@@ -68,15 +65,7 @@ export default {
   asyncComputed: {
     items: {
       get () {
-        this.$transaction.methods.balances(this.$store.state.userInfo.address).call()
-        .then((response) => console.log(response))
-        .catch((error) => console.log(error))
         return this.fetchData(this.$route.path)
-      }
-    },
-    balance: {
-      get () {
-        return this.$getBalance()
       }
     }
   },
@@ -140,26 +129,27 @@ export default {
         alert('The number should be smaller than the storage number')
         return
       }
-      let price = parseInt(item.price, 10) * item.amountToBuy
+      let price = item.price * item.amountToBuy * 1000
+
+      let priceParsed = parseInt(price, 10)
       try {
-        let balance = await this.balance
-        console.log('before: ' + balance)
-        if (balance < price) {
-          alert('You don\'t have enough, You will be redirected to deposit page')
-          this.$router.push('/balance')
-        }
-        this.$transaction.methods.transfer('0xd7f56927b3d89ac99622ddbfad9372c503d883ef', parseInt(item.price * 1000, 10), item.id)
+        // send request to the backend to check if quantity is available
+        let product = await this.$http.get('/products/product/' + item.id)
+        let address = product.owner_address
+        address = '0xd7f56927b3d89ac99622ddbfad9372c503d883ef'
+        console.log(priceParsed)
+        this.$transaction.methods.transfer(address, priceParsed, item.id)
         .send({
           from: this.$store.state.userInfo.address,
-          gas: 400000
+          gas: 400000,
+          value: window.web3.utils.toWei(price.toString(), 'finney')
         })
         .then(function (response) {
-          this.$getBalance()
-          .then(function (response) {
-            this.balance = response
-            console.log(this.balance)
-          }.bind(this))
-          .catch((error) => console.log(error))
+          this.$http.post('/purchaseProducts', {
+            product_id: item.id,
+            quantity: item.amountToBuy
+          })
+          alert('Success')
         }.bind(this))
         alert('Your transaction will be in the block chain after you submit')
       } catch (error) {

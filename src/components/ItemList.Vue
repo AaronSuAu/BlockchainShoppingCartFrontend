@@ -11,7 +11,8 @@
             <span>Name: {{item.name}} </span><br/>
             <span v-if="$route.path === '/shoppingcart'">Storage: {{item.quantity}}</span>
             <span v-else>Quantity: {{item.quantity}}</span><br/>
-            <span>Price: {{item.price}} eth</span><br/>
+            <span v-if="$route.path === '/purchased'">Total Price: {{item.amount / 1000}} eth</span>
+            <span v-else>Price: {{item.price}} eth</span><br/>
             <span>Description: {{item.description}}</span>
           </div>
           <div v-if="$route.path === '/search'" class="col-md-3">
@@ -32,10 +33,10 @@
             <span> Quantity: 1 </span>
             <!-- <button class="btn btn-primary btn-block btn-margin-top" @click="updateItem(item)">Edit</button> -->
           </div>
-          <div v-else-if="$route.path === '/purchased'" class="col-md-3">
-            <span> Quantity: {{item.amount}} </span>
-            <!-- <button class="btn btn-primary btn-block btn-margin-top" @click="updateItem(item)">Edit</button> -->
-          </div>
+          <!--<div v-else-if="$route.path === '/purchased'" class="col-md-3">-->
+            <!--<span> Quantity: {{item.amount}} </span>-->
+            <!--&lt;!&ndash; <button class="btn btn-primary btn-block btn-margin-top" @click="updateItem(item)">Edit</button> &ndash;&gt;-->
+          <!--</div>-->
         </div>
       </template>
       <div class="row">

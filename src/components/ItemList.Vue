@@ -130,15 +130,13 @@ export default {
         return
       }
       let price = item.price * item.amountToBuy * 1000
-
-      let priceParsed = parseInt(price, 10)
+      let amount = parseInt(item.amountToBuy, 10)
       try {
         // send request to the backend to check if quantity is available
         let product = await this.$http.get('/products/product/' + item.id)
         let address = product.owner_address
-        // address = '0xd7f56927b3d89ac99622ddbfad9372c503d883ef'
-        console.log(priceParsed)
-        this.$transaction.methods.transfer(address, priceParsed, item.id)
+        address = '0xd7f56927b3d89ac99622ddbfad9372c503d883ef'
+        this.$transaction.methods.transfer(address, amount, item.id)
         .send({
           from: this.$store.state.userInfo.address,
           gas: 400000,
@@ -146,11 +144,15 @@ export default {
         })
         .then(function (response) {
           this.$http.post('/purchaseProducts', {
-            product_id: item.id,
-            quantity: item.amountToBuy
+            shoppingCartId: item.shopping_carts_id
+          }).then(function (res) {
+            this.fetchData(this.$route.path)
           })
           alert('Success')
         }.bind(this))
+        .catch(function (response) {
+          alert('Purchase fail')
+        })
         alert('Your transaction will be in the block chain after you submit')
       } catch (error) {
         alert(error)

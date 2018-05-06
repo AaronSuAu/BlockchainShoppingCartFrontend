@@ -48,7 +48,7 @@
           <option>1</option>
         </select>
       </div>
-      <p style="color: red">{{errors}}</p>
+      <p v-for="err in errors" style="color: red">{{err}}</p>
       <button type="submit" class="btn btn-primary" @click="submit">Submit</button>
     </form>
   </div>
@@ -57,9 +57,20 @@
 <script>
   export default {
     name: 'register',
+    computed: {
+      errorToDisplay () {
+        if (!this.errors) {
+          return null
+        } else if (typeof this.errors === 'string') {
+          return [this.errors]
+        } else if (typeof this.errors === 'object') {
+          return this.errors
+        }
+      }
+    },
     data () {
       return {
-        errors: {},
+        errors: null,
         options: {
           url: 'http://192.168.99.100/api/image',
           maxFilesize: {

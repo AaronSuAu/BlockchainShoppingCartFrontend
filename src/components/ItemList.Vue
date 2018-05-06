@@ -136,7 +136,7 @@ export default {
         // send request to the backend to check if quantity is available
         let product = await this.$http.get('/products/product/' + item.id)
         let address = product.owner_address
-        address = '0xd7f56927b3d89ac99622ddbfad9372c503d883ef'
+        // address = '0xd7f56927b3d89ac99622ddbfad9372c503d883ef'
         console.log(priceParsed)
         this.$transaction.methods.transfer(address, priceParsed, item.id)
         .send({

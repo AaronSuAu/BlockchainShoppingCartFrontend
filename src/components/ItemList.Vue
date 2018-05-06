@@ -136,7 +136,7 @@ export default {
         let product = await this.$http.get('/products/product/' + item.id)
         let address = product.owner_address
         address = '0xd7f56927b3d89ac99622ddbfad9372c503d883ef'
-        this.$transaction.methods.transfer(address, amount, item.id)
+        this.$transaction.methods.transfer(address, price, amount, item.id)
         .send({
           from: this.$store.state.userInfo.address,
           gas: 400000,
@@ -146,7 +146,7 @@ export default {
           this.$http.post('/purchaseProducts', {
             shoppingCartId: item.shopping_carts_id
           }).then(function (res) {
-            this.fetchData(this.$route.path)
+            // this.fetchData(this.$route.path)
           })
           alert('Success')
         }.bind(this))

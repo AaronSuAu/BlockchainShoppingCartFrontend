@@ -25,7 +25,7 @@ window.addEventListener('load', function () {
     window.web3 = new Web3(new Web3.providers.HttpProvider('http://localhost:8545'))
   }
   // test contract
-  var transactionInstance = new window.web3.eth.Contract(tranactionJson, '0x50C76bEB0039d29c324ef29d426447e1D177C927')
+  var transactionInstance = new window.web3.eth.Contract(tranactionJson, '0x699671d13abf2A881Bb1132D7E26f46d337943c2')
   console.log(transactionInstance)
   // set axios
   axios.defaults.timeout = 5000

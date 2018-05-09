@@ -135,7 +135,8 @@ export default {
       try {
         // send request to the backend to check if quantity is available
         let product = await this.$http.get('/products/product/' + item.id)
-        let address = product.owner_address
+        let address = product.data.owner_address
+        console.log(address)
         // address = '0xd7f56927b3d89ac99622ddbfad9372c503d883ef'
         this.$transaction.methods.transfer(address, price, amount, item.id)
         .send({
@@ -145,19 +146,21 @@ export default {
         })
         .then(function (response) {
           console.log('amount', amount)
-          this.$http.post('/purchaseProducts', {
+          return this.$http.post('/purchaseProducts', {
             shoppingCartId: item.shopping_carts_id,
             quantity: amount
           })
         }.bind(this))
         .then(function (res) {
-          this.fetchData(this.$route.path)
-          alert('success')
+          // alert('success')
+          return this.fetchData(this.$route.path)
         }.bind(this))
         .then(function (res) {
+          console.log(res)
           this.items = res
         }.bind(this))
         .catch(function (response) {
+          console.log(response)
           alert('Purchase fail')
         })
         alert('Your transaction will be in the block chain after you submit')

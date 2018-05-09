@@ -15,7 +15,7 @@
       </div>
       <div class="form-group">
         <label for="price">Price</label>
-        <input type="number" class="form-control" id="price" v-model="formData.price">
+        <input class="form-control" id="price" v-model="formData.price">
       </div>
       <div class="form-group">
         <label for="quantity">Quantity</label>

@@ -4,7 +4,7 @@
       <template v-for="item in items.data">
         <div class="row item-margin-top-list">
           <div class="col-md-3">  
-            <img :src="item.image_url"
+            <img :src="item.image_url" style="height: 130px"
             alt="image" class="item-in-list">
           </div>
           <div class="col-md-6 text-left">
@@ -13,9 +13,9 @@
             <span v-else>Quantity: {{item.quantity}}</span><br/>
             <span v-if="$route.path === '/purchased'">Total Price: {{item.amount / 1000}} eth</span>
             <span v-else>Price: {{item.price}} eth</span><br/>
-            <span v-if="$route.path === '/purchased' || $route.path === '/history'">
-              Deal time: {{item.time / 1000}}
-            </span><br>
+            <div v-if="$route.path === '/purchased' || $route.path === '/history'">
+              Deal time: {{item.time}}
+            </div>
             <span>Description: {{item.description}}</span>
           </div>
           <div v-if="$route.path === '/search'" class="col-md-3">

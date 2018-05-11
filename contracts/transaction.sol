@@ -5,7 +5,7 @@ contract Transaction {
    
    uint public constant price = 1 finney;
    address owner;
-   event LogTransfer(address sender, address to, uint amount, uint quantity, uint productId);
+   event LogTransfer(address sender, address to, uint amount, uint quantity, uint productId, uint time);
     
     function Transaction(){
         owner = msg.sender;
@@ -16,7 +16,7 @@ contract Transaction {
             throw;
         }
         to.transfer(amount * price);
-        LogTransfer(msg.sender, to, amount, quantity, productId);
+        LogTransfer(msg.sender, to, amount, quantity, productId, now);
     }
     
     function withdraw() {

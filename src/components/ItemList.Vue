@@ -50,7 +50,7 @@
             <!--&lt!&ndash <button class="btn btn-primary btn-block btn-margin-top" @click="updateItem(item)">Edit</button> &ndash&gt-->
           <!--</div>-->
         </div>
-      </template>
+      </template><br>
       <div class="row">
         <div v-if="items.next_page_url != null">
           <div class="col-md-2">

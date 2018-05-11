@@ -43,6 +43,7 @@
 
   .item-margin-top-list {
     margin-top: 10px;
+    border-bottom-style: inset !important;
   }
 
   .content-cover {

@@ -81,6 +81,11 @@
         "indexed": false,
         "name": "productId",
         "type": "uint256"
+      },
+      {
+        "indexed": false,
+        "name": "time",
+        "type": "uint256"
       }
     ],
     "name": "LogTransfer",

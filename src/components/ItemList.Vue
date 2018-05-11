@@ -22,6 +22,9 @@
             <span v-else>Quantity: {{item.quantity}}</span><br/>
             <span v-if="$route.path === '/purchased'">Total Price: {{item.amount / 1000}} eth</span>
             <span v-else>Price: {{item.price}} eth</span><br/>
+            <span v-if="$route.path === '/purchased' || $route.path === '/history'">
+              Deal time: {{item.time / 1000}}
+            </span><br>
             <span>Description: {{item.description}}</span>
           </div>
           <div v-if="$route.path === '/search'" class="col-md-3">
@@ -44,7 +47,7 @@
           </div>
           <!--<div v-else-if="$route.path === '/purchased'" class="col-md-3">-->
             <!--<span> Quantity: {{item.amount}} </span>-->
-            <!--&lt;!&ndash; <button class="btn btn-primary btn-block btn-margin-top" @click="updateItem(item)">Edit</button> &ndash;&gt;-->
+            <!--&lt!&ndash <button class="btn btn-primary btn-block btn-margin-top" @click="updateItem(item)">Edit</button> &ndash&gt-->
           <!--</div>-->
         </div>
       </template>
@@ -80,6 +83,18 @@ export default {
     }
   },
   methods: {
+    timeConverter (unixTime) {
+      var a = new Date(unixTime * 1000)
+      var months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
+      var year = a.getFullYear()
+      var month = months[a.getMonth()]
+      var date = a.getDate()
+      var hour = a.getHours()
+      var min = a.getMinutes()
+      var sec = a.getSeconds()
+      var time = date + ' ' + month + ' ' + year + ' ' + hour + ':' + min + ':' + sec
+      return time
+    },
     async paginate (url) {
       try {
         // url = url.replace('http://192.168.99.100/api', '')
@@ -230,11 +245,19 @@ export default {
               for (let e of events) {
                 if (route === '/purchased') {
                   if (e.returnValues.sender === this.$store.state.userInfo.address) {
-                    productIds.push({amount: e.returnValues.amount, id: e.returnValues.productId, quantity: e.returnValues.quantity})
+                    productIds.push({
+                      amount: e.returnValues.amount,
+                      id: e.returnValues.productId,
+                      quantity: e.returnValues.quantity,
+                      time: this.timeConverter(e.returnValues.time)})
                   }
                 } else if (route === '/history') {
                   if (e.returnValues.to === this.$store.state.userInfo.address) {
-                    productIds.push({amount: e.returnValues.amount, id: e.returnValues.productId, quantity: e.returnValues.quantity})
+                    productIds.push({
+                      amount: e.returnValues.amount,
+                      id: e.returnValues.productId,
+                      quantity: e.returnValues.quantity,
+                      time: this.timeConverter(e.returnValues.time)})
                   }
                 }
               }

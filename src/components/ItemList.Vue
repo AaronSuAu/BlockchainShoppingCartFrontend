@@ -1,5 +1,14 @@
 <template>
   <div class="container" id="itemList">
+    <div id="myModal" class="modal">
+      <!-- Modal content -->
+      <div class="modal-content">
+        <p>Please wait while the transaction is being processed</p>
+        <div class="progress active">
+                <div class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" style="width: 100%;"></div>
+            </div>
+      </div>
+    </div>
     <div v-if="items != null && items.data.length > 0">
       <template v-for="item in items.data">
         <div class="row item-margin-top-list">
@@ -138,6 +147,7 @@ export default {
     },
     async buyItem (item) {
       console.log(item.amountToBuy)
+      var modal = document.getElementById('myModal')
       if (item.amountToBuy == null) {
         alert('Enter the amount you want to buy')
       }
@@ -173,14 +183,19 @@ export default {
         .then(function (res) {
           console.log(res)
           this.items = res
+          modal.style.display = 'none'
+          alert('success')
         }.bind(this))
         .catch(function (response) {
           console.log(response)
+          modal.style.display = 'none'
           alert('Purchase fail')
         })
+        modal.style.display = 'block'
         alert('Your transaction will be in the block chain after you submit')
       } catch (error) {
         alert(error)
+        modal.style.display = 'none'
       }
     },
     updateItem (item) {
@@ -266,5 +281,41 @@ export default {
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
+.modal {
+    display: none; /* Hidden by default */
+    position: fixed; /* Stay in place */
+    z-index: 1; /* Sit on top */
+    padding-top: 100px; /* Location of the box */
+    left: 0;
+    top: 0;
+    width: 100%; /* Full width */
+    height: 100%; /* Full height */
+    overflow: auto; /* Enable scroll if needed */
+    background-color: rgb(0,0,0); /* Fallback color */
+    background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
+}
 
+/* Modal Content */
+.modal-content {
+    background-color: #fefefe;
+    margin: auto;
+    padding: 20px;
+    border: 1px solid #888;
+    width: 60%;
+}
+
+/* The Close Button */
+.close {
+    color: #aaaaaa;
+    float: right;
+    font-size: 28px;
+    font-weight: bold;
+}
+
+.close:hover,
+.close:focus {
+    color: #000;
+    text-decoration: none;
+    cursor: pointer;
+}
 </style>

@@ -3,7 +3,7 @@
     <div id="myModal" class="modal">
       <!-- Modal content -->
       <div class="modal-content">
-        <p>Please wait while the transaction is being processed</p>
+        <p>Please wait while the transaction is being processed, Do not refresh or do anything</p>
         <div class="progress active">
                 <div class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" style="width: 100%;"></div>
             </div>
@@ -125,11 +125,9 @@ export default {
         const address = this.$store.state.userInfo.address
         console.log(item.shopping_carts_id)
         await this.$http.delete('/shoppingCarts/' + item.shopping_carts_id + '/' + address)
-        alert('Success')
         this.items = await this.fetchData(this.$route.path)
       } catch (e) {
         console.log(e)
-        alert('Error, try again')
       }
     },
     async addItemToShoppingCart (item) {
@@ -161,7 +159,6 @@ export default {
         // send request to the backend to check if quantity is available
         let product = await this.$http.get('/products/product/' + item.id)
         let address = product.data.owner_address
-        console.log(address)
         // address = '0xd7f56927b3d89ac99622ddbfad9372c503d883ef'
         this.$transaction.methods.transfer(address, price, amount, item.id)
         .send({
@@ -170,7 +167,6 @@ export default {
           value: window.web3.utils.toWei(price.toString(), 'finney')
         })
         .then(function (response) {
-          console.log('amount', amount)
           return this.$http.post('/purchaseProducts', {
             shoppingCartId: item.shopping_carts_id,
             quantity: amount
@@ -187,7 +183,6 @@ export default {
           alert('success')
         }.bind(this))
         .catch(function (response) {
-          console.log(response)
           modal.style.display = 'none'
           alert('Purchase fail')
         })

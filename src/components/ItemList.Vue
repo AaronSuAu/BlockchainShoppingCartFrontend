@@ -20,7 +20,7 @@
             <span>Name: {{item.name}} </span><br/>
             <span v-if="$route.path === '/shoppingcart'">Storage: {{item.quantity}}</span>
             <span v-else>Quantity: {{item.quantity}}</span><br/>
-            <span v-if="$route.path === '/purchased'">Total Price: {{item.amount / 1000}} eth</span>
+            <span v-if="$route.path === '/purchased' || $route.path === '/history'">Total Price: {{item.amount / 1000}} eth</span>
             <span v-else>Price: {{item.price}} eth</span><br/>
             <div v-if="$route.path === '/purchased' || $route.path === '/history'">
               Deal time: {{item.time}}
@@ -41,10 +41,7 @@
             <button class="btn btn-primary btn-block btn-margin-top" @click="updateItem(item)">Edit</button>
             <button class="btn btn-danger btn-block btn-margin-top" @click="deleteMyItem(item)">Delete</button>
           </div>
-          <div v-else-if="$route.path === '/history'" class="col-md-3">
-            <span> Quantity: 1 </span>
-            <!-- <button class="btn btn-primary btn-block btn-margin-top" @click="updateItem(item)">Edit</button> -->
-          </div>
+      
           <!--<div v-else-if="$route.path === '/purchased'" class="col-md-3">-->
             <!--<span> Quantity: {{item.amount}} </span>-->
             <!--&lt!&ndash <button class="btn btn-primary btn-block btn-margin-top" @click="updateItem(item)">Edit</button> &ndash&gt-->
@@ -105,7 +102,6 @@ export default {
           url: url
         })
         this.items = response.data
-        console.log(this.items)
       } catch (e) {
         console.log(e)
         alert('error, try again')
@@ -123,7 +119,6 @@ export default {
     async deleteItemFromShoppingCart (item) {
       try {
         const address = this.$store.state.userInfo.address
-        console.log(item.shopping_carts_id)
         await this.$http.delete('/shoppingCarts/' + item.shopping_carts_id + '/' + address)
         this.items = await this.fetchData(this.$route.path)
       } catch (e) {
@@ -132,7 +127,6 @@ export default {
     },
     async addItemToShoppingCart (item) {
       try {
-        console.log(item.id)
         await this.$http.post('/shoppingCarts/' + this.$store.state.userInfo.address, {
           product_id: item.id,
           quantity: 1
@@ -144,7 +138,6 @@ export default {
       }
     },
     async buyItem (item) {
-      console.log(item.amountToBuy)
       var modal = document.getElementById('myModal')
       if (item.amountToBuy == null) {
         alert('Enter the amount you want to buy')
@@ -177,10 +170,8 @@ export default {
           return this.fetchData(this.$route.path)
         }.bind(this))
         .then(function (res) {
-          console.log(res)
           this.items = res
           modal.style.display = 'none'
-          alert('success')
         }.bind(this))
         .catch(function (response) {
           modal.style.display = 'none'
@@ -210,7 +201,6 @@ export default {
           alert('Error, try again')
         }
       } else if (route === '/shoppingcart') {
-        console.log('shopping cart')
         try {
           response = await this.$http.get('/shoppingCarts/' + this.$store.state.userInfo.address)
           // console.log(JSON.stringify(response))

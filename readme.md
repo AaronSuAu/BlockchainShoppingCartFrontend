@@ -1,3 +1,4 @@
+# Excited Frog
 ## Front End
 As we have pack the frontend project and put it to the backend folder, if you are not interested in this section, you can skip here.
 But if you want to explore more, you can continue.
